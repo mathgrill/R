@@ -73,7 +73,16 @@ df.test <- data.frame(ImageId = seq(1,length(df.test$predict)), Label = df.test$
 # save csv
 write.csv(df.test, file = "submission.csv", row.names=FALSE)
 
+# save model
+# https://www.rdocumentation.org/packages/h2o/versions/3.10.5.3/topics/h2o.saveModel
+# https://stackoverflow.com/questions/31522341/how-to-save-load-a-trained-model-in-h2o
+h2o.saveModel(res.dl, path = "/Volumes/WD-fat/__BACKUP__/KINGSTON_20170526/MATHGRILL/devel/boom", force = FALSE)
+and
+h2o.loadModel(path)
+h2o.loadModel("/Volumes/WD-fat/__BACKUP__/KINGSTON_20170526/MATHGRILL/devel/boom", conn = h2o.getConnection())
 
+# shut down virtual H2O cluster
+h2o.shutdown(prompt = FALSE)
 
 
 
