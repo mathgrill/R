@@ -16,3 +16,57 @@ test_h2o<-as.h2o(test)
 > df.test <- data.frame(ImageId = seq(1,length(pred.dl.df$predict)), Label = pred.dl.df$predict)
 > write.csv(df.test, file = "submission.csv", row.names=FALSE)
 > 
+# set working directory
+setwd("/Volumes/WD-fat/__BACKUP__/KINGSTON_20170526/MATHGRILL/devel")
+
+# read train data
+train <- read.csv ( "train.csv")
+nrow(train)
+
+# Step 2: Separate the dataset to 80% for training and 20% for testing
+inTrain<- createDataPartition(train$label, p=0.8, list=FALSE)
+training<-train[inTrain,]
+testing<-train[-inTrain,]
+
+#store the datasets into .csv files
+write.csv (training , file = "train-data.csv", row.names = FALSE) 
+write.csv (testing , file = "test-data.csv", row.names = FALSE)
+
+# Step 3: Load the h2o package
+
+library(h2o)
+ 
+# start a local h2o cluster
+local.h2o <- h2o.init(ip = "localhost", port = 54321, startH2O = TRUE, nthreads=-1)
+
+# Load the training and testing datasets and convert the label to digit factor
+training <- read.csv ("train-data.csv") 
+testing  <- read.csv ("test-data.csv")
+# convert digit labels to factor for classification
+training[,1]<-as.factor(training[,1])
+
+# pass dataframe from inside of the R environment to the H2O instance
+trData<-as.h2o(training)
+tsData<-as.h2o(testing)
+
+# Step 4: Train the model
+
+# Next is to train the model. For this experiment, 5 layers of 160 nodes each are used. The rectifier used is Tanh and number of epochs is 20
+
+# Step 5: Use the model to predict
+
+#use model to predict testing dataset
+pred.dl<-h2o.predict(object=res.dl, newdata=tsData[,-1])
+pred.dl.df<-as.data.frame(pred.dl)
+
+summary(pred.dl)
+test_labels<-testing[,1]
+
+#calculate number of correct prediction
+sum(diag(table(test_labels,pred.dl.df[,1])))
+
+
+
+
+
+
