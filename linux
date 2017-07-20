@@ -1,0 +1,8 @@
+# disk usage
+fd - h
+
+# mem usage
+free -m
+
+# processes
+top
