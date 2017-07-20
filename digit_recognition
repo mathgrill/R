@@ -2,6 +2,8 @@
 
 # https://www.kaggle.com/c/digit-recognizer/leaderboard
 
+# to cancel a command - press ESC
+
 # ---------------------
 # set working directory
 setwd("/Volumes/WD-fat/__BACKUP__/KINGSTON_20170526/MATHGRILL/devel")
