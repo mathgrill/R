@@ -1,0 +1,19 @@
+train <- read.csv(file="train.csv",nrows=10000)
+
+# installing a pkg
+install.packages("data.table")
+# load it
+library(data.table)
+
+# Step 2: Separate the dataset to 80% for training and 20% for testing
+> inTrain<- createDataPartition(train$trip_duration, p=0.8, list=FALSE)
+> training<-train[inTrain,]
+> testing<-train[-inTrain,]
+> 
+> #store the datasets into .csv files
+> write.csv (training , file = "train-data.csv", row.names = FALSE) 
+> write.csv (testing , file = "test-data.csv", row.names = FALSE)
+> nrow(training)
+[1] 8001
+> nrow(testing)
+[1] 1999
