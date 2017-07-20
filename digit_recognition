@@ -1,3 +1,18 @@
 # https://kuanhoong.wordpress.com/2016/02/01/r-and-deep-learning-cnn-for-handwritten-digits-recognition/
 
 # https://www.kaggle.com/c/digit-recognizer/leaderboard
+
+test_h2o<-as.h2o(test)
+ 
+> #use model to predict testing dataset
+
+
+> tsData<-as.h2o(test)
+  |=========================================================================================================================================================================================| 100%
+> #use model to predict testing dataset
+> pred.dl<-h2o.predict(object=res.dl, newdata=tsData)
+  |=====================================================================================================================================| 100%
+> pred.dl.df<-as.data.frame(pred.dl)
+> df.test <- data.frame(ImageId = seq(1,length(pred.dl.df$predict)), Label = pred.dl.df$predict)
+> write.csv(df.test, file = "submission.csv", row.names=FALSE)
+> 
