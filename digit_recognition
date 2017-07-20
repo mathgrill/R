@@ -67,6 +67,24 @@ test_labels<-testing[,1]
 #calculate number of correct prediction
 sum(diag(table(test_labels,pred.dl.df[,1])))
 
+# Step 6: Predict test.csv and submit to Kaggle
+
+# Lastly, use the model to predict test.csv and submit the result to Kaggle.
+
+# read test.csv
+test<-read.csv("test.csv")
+# pass test data to h2o 
+test_h2o<-as.h2o(test)
+
+# predict test data
+pred.dl<-h2o.predict(object=res.dl, newdata=test_h2o)
+
+df.test <- as.data.frame(pred.dl)
+df.test <- data.frame(ImageId = seq(1,length(df.test$predict)), Label = df.test$predict)
+# save csv
+write.csv(df.test, file = "submission.csv", row.names=FALSE)
+
+
 
 
 
