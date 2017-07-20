@@ -53,6 +53,8 @@ tsData<-as.h2o(testing)
 
 # Next is to train the model. For this experiment, 5 layers of 160 nodes each are used. The rectifier used is Tanh and number of epochs is 20
 
+res.dl <- h2o.deeplearning(x = 2:785, y = 1, trData, activation = "Tanh", hidden=rep(160,5),epochs = 60)
+
 # Step 5: Use the model to predict
 
 #use model to predict testing dataset
