@@ -52,8 +52,8 @@ names(training)
 # remove column 12
 training <-training[,-c(12)]
 # update csv files
-write.csv(testing, file = "testing.csv")
-write.csv(training, file = "training.csv")
+write.csv(testing, file = "testing.csv", row.names=FALSE)
+write.csv(training, file = "training.csv", row.names=FALSE)
 
 # round distance CTD
 testing$CTD <- round(testing$CTD, 0)
