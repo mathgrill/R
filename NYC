@@ -61,3 +61,14 @@ write.csv(testing, file = "testing.csv")
 training$CTD <- round(training$CTD, 0)
 write.csv(training, file = "training.csv")
 
+res.dl <- h2o.deeplearning(x = c(6,7,8,9,10,12), y = 11, trData, activation = "Tanh", hidden=rep(160,5),epochs = 20)
+
+test <- test %>% mutate(CTD = distHaversine(cbind(pickup_longitude, pickup_latitude), cbind(dropoff_longitude, dropoff_latitude)))
+write.csv(test, file = "test.csv", row.names=FALSE)
+
+# make predictions
+pred.dl<-h2o.predict(object=res.dl, newdata=test_h2o)
+summary(pred.dl)
+df.test <- as.data.frame(pred.dl)
+write.csv(df.test, file = "submission3.csv")
+
