@@ -5,15 +5,50 @@ install.packages("data.table")
 # load it
 library(data.table)
 
+# set working dir
+setwd("/Volumes/WD-fat/R/NYCtrip")
+
 # Step 2: Separate the dataset to 80% for training and 20% for testing
-> inTrain<- createDataPartition(train$trip_duration, p=0.8, list=FALSE)
-> training<-train[inTrain,]
-> testing<-train[-inTrain,]
-> 
-> #store the datasets into .csv files
-> write.csv (training , file = "train-data.csv", row.names = FALSE) 
-> write.csv (testing , file = "test-data.csv", row.names = FALSE)
-> nrow(training)
-[1] 8001
-> nrow(testing)
-[1] 1999
+library (caret)
+inTrain<- createDataPartition(train$trip_duration, p=0.8, list=FALSE)
+training<-train[inTrain,]
+testing<-train[-inTrain,]
+
+#store the datasets into .csv files
+write.csv (training , file = "train-data.csv", row.names = FALSE) 
+write.csv (testing , file = "test-data.csv", row.names = FALSE)
+nrow(training)
+nrow(testing)
+
+# Step 3: Load the h2o package
+
+library(h2o)
+ 
+# start a local h2o cluster
+local.h2o <- h2o.init(ip = "localhost", port = 54321, startH2O = TRUE, nthreads=-1)
+
+# Load the training and testing datasets and convert the label to digit factor
+training <- read.csv ("train-data.csv") 
+testing  <- read.csv ("test-data.csv")
+
+# pass dataframe from inside of the R environment to the H2O instance
+trData<-as.h2o(training)
+tsData<-as.h2o(testing)
+
+# Step 4: Train the model
+
+res.dl <- h2o.deeplearning(x = 6:10, y = 11, trData, activation = "Tanh", hidden=rep(160,5),epochs = 20)
+
+# install package
+install.packages("geosphere")
+library(geosphere)
+istm (c(lon1, lat1), c(lon2, lat2), fun = distHaversine)
+library(dplyr)
+# append the distance between the points to the training dataset
+training <- training %>% mutate(CTD = distHaversine(cbind(pickup_longitude, pickup_latitude), cbind(dropoff_longitude, dropoff_latitude)))
+
+# list columns
+names(training)
+# remove column 12
+training <-training[,-c(12)]
+
