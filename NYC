@@ -51,4 +51,13 @@ training <- training %>% mutate(CTD = distHaversine(cbind(pickup_longitude, pick
 names(training)
 # remove column 12
 training <-training[,-c(12)]
+# update csv files
+write.csv(testing, file = "testing.csv")
+write.csv(training, file = "training.csv")
+
+# round distance CTD
+testing$CTD <- round(testing$CTD, 0)
+write.csv(testing, file = "testing.csv")
+training$CTD <- round(training$CTD, 0)
+write.csv(training, file = "training.csv")
 
