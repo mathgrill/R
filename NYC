@@ -1,3 +1,12 @@
+# https://stackoverflow.com/questions/33903883/r-extract-hours-from-time-in-factor-format
+# https://stackoverflow.com/questions/18999710/creating-a-new-column-to-a-data-frame-using-a-formula-from-another-variable
+# https://www.rdocumentation.org/packages/h2o/versions/3.8.3.3/topics/h2o.deeplearning
+# https://stackoverflow.com/questions/3418128/how-to-convert-a-factor-to-an-integer-numeric-without-a-loss-of-information
+# https://www.stat.berkeley.edu/~s133/dates.html
+# https://stackoverflow.com/questions/32363998/function-to-calculate-geospatial-distance-between-two-points-lat-long-using-r
+# http://www.statmethods.net/input/contents.html
+
+
 train <- read.csv(file="train.csv",nrows=10000)
 
 # installing a pkg
