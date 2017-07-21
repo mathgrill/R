@@ -81,5 +81,13 @@ test$hour <- format(strptime(test$pickup_datetime,"%Y-%m-%d %H:%M:%S"),'%H')
 head(training, n=10)
 head(test, n=10)
 
+training$hour <- as.numeric(training$hour)
+training$day <- as.factor(training$day)
+
+test$hour <- as.numeric(test$hour)
+test$day <- as.factor(test$day)
+
 # pass test data to h2o 
 test_h2o<-as.h2o(test)
+
+res.dl <- h2o.deeplearning(x = c(6,7,8,9,10,12,13,14), y = 11, trData, activation = "Tanh", hidden=rep(160,5),epochs = 20)
