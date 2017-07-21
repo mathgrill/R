@@ -72,3 +72,14 @@ summary(pred.dl)
 df.test <- as.data.frame(pred.dl)
 write.csv(df.test, file = "submission3.csv")
 
+# new iteration take into account start of the trip and day of the week
+training$day <- weekdays(as.Date(training$pickup_datetime))
+training$hour <- format(strptime(training$pickup_datetime,"%Y-%m-%d %H:%M:%S"),'%H')
+
+test$day <- weekdays(as.Date(test$pickup_datetime))
+test$hour <- format(strptime(test$pickup_datetime,"%Y-%m-%d %H:%M:%S"),'%H')
+head(training, n=10)
+head(test, n=10)
+
+# pass test data to h2o 
+test_h2o<-as.h2o(test)
