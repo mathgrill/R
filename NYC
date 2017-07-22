@@ -9,8 +9,17 @@
 # https://stackoverflow.com/questions/32363998/function-to-calculate-geospatial-distance-between-two-points-lat-long-using-r
 # http://www.statmethods.net/input/contents.html
 
+library('dplyr') # data manipulation
 
 train <- read.csv(file="train.csv",nrows=10000)
+
+glimpse(train)
+
+# Missing Values
+sum(is.na(train))
+
+# multiplot
+source("http://peterhaschke.com/Code/multiplot.R")
 
 # installing a pkg
 install.packages("data.table")
