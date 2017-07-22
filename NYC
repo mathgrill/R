@@ -115,6 +115,11 @@ rmsle(actual, predicted)
 pred.dl<-h2o.predict(object=res.dl, newdata=tsData)
 df.test <- as.data.frame(pred.dl)
 testactual <- testing$trip_duration
+# replace negative predictions by 0
+df.test$predict <- ifelse(df.test$predict < 0, 0, df.test$predict)
+# round
+df.test$predict <- round(df.test$predict, 0)
+# Compute the root mean squared log error
 rmsle(df.test, testactual)
 
 
