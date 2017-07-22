@@ -1,0 +1,20 @@
+library('ggplot2') # visualization
+library('ggthemes') # visualization
+library('scales') # visualization
+library('grid') # visualisation
+library('gridExtra') # visualisation
+library('corrplot') # visualisation
+library('dplyr') # data manipulation
+library('data.table') # data manipulation
+library('readr') # data input
+library('tibble') # data wrangling
+library('tidyr') # data wrangling
+library('lazyeval') # data wrangling
+library('stringr') # string manipulation
+library('forcats') # factor manipulation
+library('lubridate') # date and time
+library('geosphere') # geospatial locations
+library('leaflet') # maps
+library('ggmap') # maps
+library('maps') # maps
+library(Metrics)
