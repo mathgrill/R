@@ -135,4 +135,11 @@ df.test$predict <- round(df.test$predict, 0)
 # Compute the root mean squared log error
 rmsle(df.test, testactual)
 
+# convert to datetime format?
+train <- train %>%
+  mutate(pickup_datetime = ymd_hms(pickup_datetime),
+         dropoff_datetime = ymd_hms(dropoff_datetime),
+         vendor_id = factor(vendor_id),
+         passenger_count = factor(passenger_count))
+
 
