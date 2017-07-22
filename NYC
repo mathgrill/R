@@ -13,6 +13,9 @@ library('dplyr') # data manipulation
 
 train <- read.csv(file="train.csv",nrows=10000)
 
+train$vendor_id <- as.factor(train$vendor_id)
+train$store_and_fwd_flag <- as.factor(train$store_and_fwd_flag)
+
 glimpse(train)
 
 # Missing Values
@@ -119,7 +122,8 @@ install.packages("Metrics")
 library(Metrics)
 rmsle(actual, predicted)
 
-
+# get model
+res.dl <- h2o.deeplearning(x = c(6,7,8,9,10,12), y = 11, trData, activation = "Tanh", hidden=rep(160,5),epochs = 20)
 # make predictions
 pred.dl<-h2o.predict(object=res.dl, newdata=tsData)
 df.test <- as.data.frame(pred.dl)
