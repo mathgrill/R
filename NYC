@@ -109,12 +109,12 @@ res.dl <- h2o.deeplearning(x = c(6,7,8,9,10,12,13,14), y = 11, trData, activatio
 install.packages("Metrics")
 library(Metrics)
 rmsle(actual, predicted)
-> # make predictions
-> pred.dl<-h2o.predict(object=res.dl, newdata=tsData)
-  |===================================================================================================================================| 100%
-> df.test <- as.data.frame(pred.dl)
-> testactual <- testing$trip_duration
-> library(Metrics)
-> rmsle(df.test, testactual)
+
+
+# make predictions
+pred.dl<-h2o.predict(object=res.dl, newdata=tsData)
+df.test <- as.data.frame(pred.dl)
+testactual <- testing$trip_duration
+rmsle(df.test, testactual)
 
 
