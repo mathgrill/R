@@ -181,3 +181,22 @@ train <- train %>%
          pickup_datetime = factor(pickup_datetime),
          dropoff_datetime = factor(dropoff_datetime)         
          )
+# STEP gmaps stuff
+# http://nagraj.net/notes/calculating-geographic-distance-with-r/
+# http://maps.googleapis.com/maps/api/distancematrix/json?origins=40.76793671,-73.98215485&destinations=40.76560211,-73.96463013&mode=driving&sensor=false
+
+# load ggmap
+library(ggmap)
+
+# calculate distance between two place names
+arena_dist <- mapdist(from = "Madison Square Garden New York, NY", to = "The Palace of Auburn Hills Auburn Hills, MI")
+
+arena_dist <- mapdist(from = "40.76793671, -73.98215485", to = "40.76560211, -73.96463013")
+
+# output distance in miles
+arena_dist$miles
+
+# output "distance" in minutes
+arena_dist$minutes
+
+
