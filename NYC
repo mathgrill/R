@@ -233,10 +233,10 @@ train <- train %>%
 gg <- train[,c("pickup","dropoff")]
 
 gg <- as.data.frame(lapply(gg, function(x) sapply(as.character(x), function(y) URLencode(y, T) ) ), stringsAsFactors = F)
-rownames(X) <- NULL
+rownames(gg) <- NULL
 
-res <- mapdist(from= X$pickup, 
-     to = X$dropoff, 
+res <- mapdist(from= gg$pickup, 
+     to = gg$dropoff, 
      mode = "driving" ,
      output = "simple", messaging = FALSE, sensor = FALSE,
      language = "en-EN", override_limit = FALSE)
