@@ -229,7 +229,7 @@ train <- train %>%
          pickup = paste(pickup_latitude,",",pickup_longitude),
          dropoff = paste(dropoff_latitude,",",dropoff_longitude)         
          )
-# create dataframe from some columns
+# create new dataframe from some columns
 gg <- train[,c("pickup","dropoff")]
 
 gg <- as.data.frame(lapply(gg, function(x) sapply(as.character(x), function(y) URLencode(y, T) ) ), stringsAsFactors = F)
@@ -241,5 +241,5 @@ res <- mapdist(from= gg$pickup,
      output = "simple", messaging = FALSE, sensor = FALSE,
      language = "en-EN", override_limit = FALSE)
 
-
-
+# append the res data to train
+train <- cbind(train, res)
