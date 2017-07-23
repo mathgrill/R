@@ -199,4 +199,27 @@ arena_dist$miles
 # output "distance" in minutes
 arena_dist$minutes
 
+# how to do thos?
+gm <- train %>%
++   select(mapdist(from = cat(train$pickup_latitude,", ",train$pickup_longitude), to = cat(train$dropoff_latitude,", ",train$dropoff_longitude)))
+
+# remove column "new"
+train <- subset(train, select=-c(new))
+
+# this works to get results from coordinates:
+library(ggmap)
+X <- read.table(header=TRUE, text="pickup                 dropoff 
+40.77419,-73.872608    40.78055,-73.955042
+40.7737,-73.870721     40.757007,-73.971953")
+
+X <- as.data.frame(lapply(X, function(x) sapply(as.character(x), function(y) URLencode(y, T) ) ), stringsAsFactors = F)
+rownames(X) <- NULL
+
+res <- mapdist(from= X$pickup, 
+    to = X$dropoff, 
+    mode = "driving" ,
+    output = "simple", messaging = FALSE, sensor = FALSE,
+    language = "en-EN", override_limit = FALSE)
+cbind(X, res)
+
 
