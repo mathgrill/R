@@ -243,3 +243,6 @@ res <- mapdist(from= gg$pickup,
 
 # append the res data to train
 train <- cbind(train, res)
+
+# detach all pkg
+rm(list = ls(all = TRUE))
