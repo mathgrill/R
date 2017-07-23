@@ -9,6 +9,9 @@
 # https://stackoverflow.com/questions/32363998/function-to-calculate-geospatial-distance-between-two-points-lat-long-using-r
 # http://www.statmethods.net/input/contents.html
 
+# set working dir
+setwd("/Volumes/WD-fat/R/NYCtrip")
+
 library('dplyr') # data manipulation
 
 train <- read.csv(file="train.csv",nrows=10000)
@@ -29,8 +32,7 @@ install.packages("data.table")
 # load it
 library(data.table)
 
-# set working dir
-setwd("/Volumes/WD-fat/R/NYCtrip")
+
 
 # Step 2: Separate the dataset to 80% for training and 20% for testing
 library (caret)
@@ -135,6 +137,7 @@ df.test$predict <- round(df.test$predict, 0)
 # Compute the root mean squared log error
 rmsle(df.test, testactual)
 
+library('lubridate')
 # convert to datetime format?
 train <- train %>%
   mutate(pickup_datetime = ymd_hms(pickup_datetime),
@@ -142,7 +145,9 @@ train <- train %>%
          vendor_id = factor(vendor_id),
          passenger_count = factor(passenger_count))
          
-# airports and dist
+# add some vars - airports and dist
+library('geosphere') # geospatial locations
+
 jfk_coord <- tibble(lon = -73.778889, lat = 40.639722)
 la_guardia_coord <- tibble(lon = -73.872611, lat = 40.77725)
 
@@ -166,5 +171,13 @@ train <- train %>%
          jfk_trip = (jfk_dist_pick < 2e3) | (jfk_dist_drop < 2e3),
          lg_trip = (lg_dist_pick < 2e3) | (lg_dist_drop < 2e3)
          )
-
-
+# convert some vars to factors
+train <- train %>%
+  mutate(
+         month = factor(month),
+         wday = factor(wday),
+         vendor_id = factor(vendor_id),
+         store_and_fwd_flag = factor(store_and_fwd_flag),
+         pickup_datetime = factor(pickup_datetime),
+         dropoff_datetime = factor(dropoff_datetime)         
+         )
