@@ -141,5 +141,30 @@ train <- train %>%
          dropoff_datetime = ymd_hms(dropoff_datetime),
          vendor_id = factor(vendor_id),
          passenger_count = factor(passenger_count))
+         
+# airports and dist
+jfk_coord <- tibble(lon = -73.778889, lat = 40.639722)
+la_guardia_coord <- tibble(lon = -73.872611, lat = 40.77725)
+
+pick_coord <- train %>%
+  select(pickup_longitude, pickup_latitude)
+drop_coord <- train %>%
+  select(dropoff_longitude, dropoff_latitude)
+train$dist <- distCosine(pick_coord, drop_coord)
+
+train$jfk_dist_pick <- distCosine(pick_coord, jfk_coord)
+train$jfk_dist_drop <- distCosine(drop_coord, jfk_coord)
+train$lg_dist_pick <- distCosine(pick_coord, la_guardia_coord)
+train$lg_dist_drop <- distCosine(drop_coord, la_guardia_coord)
+
+train <- train %>%
+  mutate(speed = dist/trip_duration*3.6,
+         date = date(pickup_datetime),
+         month = month(pickup_datetime),
+         wday = wday(pickup_datetime),
+         hour = hour(pickup_datetime),
+         jfk_trip = (jfk_dist_pick < 2e3) | (jfk_dist_drop < 2e3),
+         lg_trip = (lg_dist_pick < 2e3) | (lg_dist_drop < 2e3)
+         )
 
 
