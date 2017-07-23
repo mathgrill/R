@@ -207,6 +207,7 @@ gm <- train %>%
 train <- subset(train, select=-c(new))
 
 # this works to get results from coordinates:
+# https://stackoverflow.com/questions/37125950/mapdist-error-is-characterfrom
 library(ggmap)
 X <- read.table(header=TRUE, text="pickup                 dropoff 
 40.77419,-73.872608    40.78055,-73.955042
@@ -221,5 +222,24 @@ res <- mapdist(from= X$pickup,
     output = "simple", messaging = FALSE, sensor = FALSE,
     language = "en-EN", override_limit = FALSE)
 cbind(X, res)
+
+# create field from concatenated fields using paste
+train <- train %>%
+  mutate(
+         pickup = paste(pickup_latitude,",",pickup_longitude),
+         dropoff = paste(dropoff_latitude,",",dropoff_longitude)         
+         )
+# create dataframe from some columns
+gg <- train[,c("pickup","dropoff")]
+
+gg <- as.data.frame(lapply(gg, function(x) sapply(as.character(x), function(y) URLencode(y, T) ) ), stringsAsFactors = F)
+rownames(X) <- NULL
+
+res <- mapdist(from= X$pickup, 
+     to = X$dropoff, 
+     mode = "driving" ,
+     output = "simple", messaging = FALSE, sensor = FALSE,
+     language = "en-EN", override_limit = FALSE)
+
 
 
