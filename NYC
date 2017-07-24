@@ -252,3 +252,6 @@ rm(list = ls(all = TRUE))
 chron::is.weekend()
 tseries::is.weekend()
 In other words, use packagename::functionname()
+
+# read this
+# https://stackoverflow.com/questions/7505547/detach-all-packages-while-working-in-r
