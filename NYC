@@ -246,3 +246,9 @@ train <- cbind(train, res)
 
 # detach all pkg
 rm(list = ls(all = TRUE))
+
+# if the same fn name appears in multiple libraries
+# To specify the package that you want to use, the syntax is:
+chron::is.weekend()
+tseries::is.weekend()
+In other words, use packagename::functionname()
