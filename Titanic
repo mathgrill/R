@@ -1,6 +1,7 @@
 ########################################################################################################
 #                              deeplearning Using h2o--out_of_bag                                      # 
 ########################################################################################################
+# https://www.kaggle.com/bikramdahal/titanic-deeplearning-ofg-r/code/code
 
 ###load all required packages
 suppressPackageStartupMessages(require('dplyr'))
@@ -132,3 +133,31 @@ write.csv(class, "deeplearning.csv", row.names=F)
 
 
 ##########################################Author Bikram Dahal#########################################
+
+# https://www.analyticsvidhya.com/blog/2015/10/inferential-descriptive-statistics-beginners-r/
+and
+# http://trevorstephens.com/kaggle-titanic-tutorial/r-part-4-feature-engineering/
+#load the data set
+train <- read.csv("train.csv", stringsAsFactors = FALSE, header = T)
+# ggplot2 example from book sample
+ggplot(data = train) + geom_point(mapping = aes(x = Fare, y = Age, color = Embarked))
+
+#find boxplot
+boxplot(train$Age ~ train$Pclass, xlab = "Class", ylab = "Age", col = c("red"))
+
+test <- read.csv("test.csv", stringsAsFactors = FALSE, header = T)
+test$Survived <- NA
+combi <- rbind(train, test)
+
+combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
+
+combi$Title <- sub(' ', '', combi$Title)
+
+table(combi$Title)
+
+combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
+
+combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
+< combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
+
+
