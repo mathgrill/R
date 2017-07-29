@@ -158,6 +158,6 @@ table(combi$Title)
 combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
 
 combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
-< combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
+combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
 
 
