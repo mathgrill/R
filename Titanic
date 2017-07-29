@@ -149,6 +149,7 @@ test <- read.csv("test.csv", stringsAsFactors = FALSE, header = T)
 test$Survived <- NA
 combi <- rbind(train, test)
 
+# title
 combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 
 combi$Title <- sub(' ', '', combi$Title)
@@ -159,5 +160,15 @@ combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
 
 combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
 combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
+combi$Title <- factor(combi$Title)
 
+# family size
+combi$FamilySize <- combi$SibSp + combi$Parch + 1
+combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
+combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
+
+# Age NAs
+Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
+                  data=combi[!is.na(combi$Age),], 
+                  method="anova")
 
