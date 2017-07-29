@@ -94,3 +94,12 @@ fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare +
 Prediction <- predict(fit, test, OOB=TRUE, type = "response")
 submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
 write.csv(submit, file = "ciforest.csv", row.names = FALSE)
+
+# h2o
+# get model
+res.dl <- h2o.deeplearning(x = c("Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "Title", "FamilySize", "FamilyID"), y = "Survived", train_h2o, activation = "Tanh", hidden=rep(160,5),epochs = 100)
+# make predictions
+pred.dl<-h2o.predict(object=res.dl, newdata=test_h2o)
+submit <- data.frame(PassengerId = test$PassengerId, Survived = pred.dl)
+write.csv(submit, file = "deep.csv", row.names = FALSE)
+
