@@ -96,8 +96,16 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
 write.csv(submit, file = "ciforest.csv", row.names = FALSE)
 
 # h2o
+# factor survived
+combi$Survived <- as.factor(combi$Survived)
+
+# pass data over
+test_h2o<-as.h2o(test)
+train_h2o<-as.h2o(train)
+
+
 # get model
-res.dl <- h2o.deeplearning(x = c("Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "Title", "FamilySize", "FamilyID"), y = "Survived", train_h2o, activation = "Tanh", hidden=rep(160,5),epochs = 100)
+res.dl <- h2o.deeplearning(x = c("Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "Title", "FamilySize", "FamilyID", "Age2"), y = "Survived", train_h2o, activation = "Tanh", hidden=rep(160,5),epochs = 100)
 # make predictions
 pred.dl<-h2o.predict(object=res.dl, newdata=test_h2o)
 df.test <- as.data.frame(pred.dl)
