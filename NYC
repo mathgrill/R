@@ -37,6 +37,7 @@ library(data.table)
 
 # Step 2: Separate the dataset to 80% for training and 20% for testing
 library (caret)
+set.seed(712)
 inTrain<- createDataPartition(train$trip_duration, p=0.8, list=FALSE)
 training<-train[inTrain,]
 testing<-train[-inTrain,]
