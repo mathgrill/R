@@ -275,5 +275,6 @@ fit <- randomForest(trip_duration ~ CTD + vendor_id + pickup_latitude + pickup_l
 # Variable Engineering
 train$pickup_wday <- as.factor(weekdays(as.Date(train$pickup_datetime)))
 train$pickup_hour <- as.numeric(substr(train$pickup_datetime,12,13))
+train$pickup_month <- as.factor(months(as.Date(train$pickup_datetime)))
 
 
