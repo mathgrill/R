@@ -293,3 +293,7 @@ glimpse(train)
 
 # Missing Values
 sum(is.na(train))
+
+# day of the year
+strftime((as.Date(cc$pickup_datetime)), format = "%j")
+
