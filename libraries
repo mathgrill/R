@@ -18,3 +18,12 @@ library('leaflet') # maps
 library('ggmap') # maps
 library('maps') # maps
 library(Metrics)
+
+#tidyverse
+library("ggplot2")
+library("tibble") 
+library("tidyr")
+library("readr")
+library("purrr")
+library("dplyr")
+
