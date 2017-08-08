@@ -29,11 +29,16 @@ library("dplyr")
 
 # http://r4ds.had.co.nz/index.html
 
-# d3 colors
+# d3 colors https://bl.ocks.org/mbostock/5577023
 d3colors <- c("#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928")
 # usage
 train %>%
      ggplot(aes(Age)) +
      geom_histogram(fill = d3colors[c(1:10)], bins = 10)
+# for many bars - up to 36
+d3colors2 <- c(d3colors , d3colors , d3colors)
+
+
+
      
      
