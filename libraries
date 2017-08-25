@@ -27,6 +27,9 @@ library("readr")
 library("purrr")
 library("dplyr")
 
+install.packages("magrittr")
+library(magrittr)
+
 # http://r4ds.had.co.nz/index.html
 
 # d3 colors https://bl.ocks.org/mbostock/5577023
