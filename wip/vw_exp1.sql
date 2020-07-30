@@ -1,4 +1,4 @@
-/* Formatted on 7/30/2020 9:10:06 AM (QP5 v5.360) */
+/*
 CREATE INDEX idx_acs_cpt
     ON public.acs (cpt);
 
@@ -16,6 +16,7 @@ AS
                        '44204')
 --limit 50
 ;
+*/
 
 DROP VIEW public.vw_exp1;
 
@@ -47,12 +48,9 @@ AS
                      'No'
              END
                  AS lap_converted_to_open,
+			 col_anastomotic,
              CASE
-                 /*when COL_ANASTOMOTIC in (
-                 'Leak, no treatment intervention documented',
-                 'Leak, treated w/ interventional means',
-                 'Leak, treated w/ non-interventional/non-operative means',
-                 'Leak, treated w/ reoperation') then 'Yes'*/
+				 WHEN col_anastomotic IS NULL THEN 'NA'
                  WHEN col_anastomotic IN ('No', 'No definitive diagnosis of leak/leak related abscess') THEN 'No'
                  WHEN col_anastomotic = 'Unknown' THEN 'NA'
                  ELSE 'Yes'
@@ -123,4 +121,4 @@ AS
                          '44140',
                          '44204')
     ORDER BY dopertod DESC
---limit 50;
+;
