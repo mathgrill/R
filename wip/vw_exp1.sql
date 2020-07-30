@@ -3,11 +3,6 @@
 create table public.acs_w as
 select 
 x.*
-/*
-case when cpt in ('44145', '44207') then '2' when cpt in ('44140','44204') then '3' end as intervention, 
-case when y.COL_NODESEVAL >= 12 then '12 or more' else 'Less than 12' end as outcome,
-x.*, y.*
-*/
 from 
 public.acs x
 where 
@@ -18,6 +13,7 @@ and cpt in ('44145','44207','44140','44204')
 --limit 50
 ;
 */
+
 drop view public.vw_exp1;
 
 create or replace view public.vw_exp1 as
