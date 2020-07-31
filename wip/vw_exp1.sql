@@ -70,7 +70,7 @@ AS
                  AS deep_organ_space_infection,
              dopertod,
              CASE WHEN dopertod = '-99' THEN 'No' WHEN dopertod IS NULL THEN 'NA' ELSE 'Yes' END
-                 AS mortality,
+                 AS mortality,	 
              --mortality <- ifelse(!is.na(DOpertoD), ‘Yes’,’No’)
              tothlos
                  AS length_of_stay,
@@ -83,7 +83,10 @@ AS
              oprenafl
                  AS acute_renal_failure,
              CASE WHEN oupneumo IS NULL THEN 'NA' WHEN oupneumo = 'Pneumonia' THEN 'Yes' ELSE 'No' END
-                 AS pneumonia,
+                 AS pneumonia, 
+			 CASE WHEN othdvt IS NULL THEN 'NA' WHEN othdvt IN ('DVT Requiring Therap', 'DVT Requiring Therapy') THEN 'Yes'
+			       ELSE 'No' END 
+			     AS deep_vein_thrombosis,
              CASE WHEN sex = 'male' THEN 'Yes' WHEN sex IS NULL THEN 'NA' ELSE 'No' END
                  AS sex_male,
              race_new,
