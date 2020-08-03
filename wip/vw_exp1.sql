@@ -29,7 +29,7 @@ AS
                  AS outcome,
              CASE WHEN y.col_nodeseval >= 12 THEN 'No' WHEN y.col_nodeseval >= 0 THEN 'Yes' ELSE 'NA' END
                  AS outcome_under12,
-             optime
+             NULLIF(optime, -99)
                  AS operative_time,
              CASE
                  WHEN col_approach IS NULL
@@ -50,7 +50,7 @@ AS
                  AS lap_converted_to_open,
 			 col_anastomotic,
              CASE
-				 WHEN col_anastomotic IS NULL THEN 'NA'
+			     WHEN col_anastomotic IS NULL THEN 'NA'
                  WHEN col_anastomotic IN ('No', 'No definitive diagnosis of leak/leak related abscess') THEN 'No'
                  WHEN col_anastomotic = 'Unknown' THEN 'NA'
                  ELSE 'Yes'
@@ -68,11 +68,11 @@ AS
              orgspcssi,
              CASE WHEN orgspcssi = 'No Complication' THEN 'No' WHEN orgspcssi IS NULL THEN 'NA' ELSE 'Yes' END
                  AS deep_organ_space_infection,
-             dopertod,
+             --dopertod,
              CASE WHEN dopertod = '-99' THEN 'No' WHEN dopertod IS NULL THEN 'NA' ELSE 'Yes' END
-                 AS mortality,	 
+                 AS dopertod, --mortality	 
              --mortality <- ifelse(!is.na(DOpertoD), ‘Yes’,’No’)
-             tothlos
+             NULLIF(tothlos, -99)
                  AS length_of_stay,
              reoperation1,
              readmission1,
@@ -87,6 +87,7 @@ AS
 			 CASE WHEN othdvt IS NULL THEN 'NA' WHEN othdvt IN ('DVT Requiring Therap', 'DVT Requiring Therapy') THEN 'Yes'
 			       ELSE 'No' END 
 			     AS deep_vein_thrombosis,
+			 pulembol as pulmonary_embolism,
              CASE WHEN sex = 'male' THEN 'Yes' WHEN sex IS NULL THEN 'NA' ELSE 'No' END
                  AS sex_male,
              race_new,
@@ -99,10 +100,17 @@ AS
                  AS race_new_white,
              COALESCE (smoke, 'NA')
                  AS smoke,
+			 hypermed as hypertension,
              cnscva,
              CASE WHEN cnscva IS NULL THEN 'NA' WHEN cnscva = 'No Complication' THEN 'No' ELSE 'Yes' END
                  AS stroke,
-             age,
+			 steroid, --steroid use
+			 WTLOSS, -- >10% weight loss 
+			 BLEEDDIS, --bleeding disorder
+			 hxchf, --congestive heart failure 
+			 hxcopd, --COPD
+             age as age_orig,
+			 replace(age,'+','')::numeric as age,
              diabetes,
              asaclas,
              col_malignancyt
