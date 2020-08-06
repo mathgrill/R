@@ -22,15 +22,20 @@ class DM:
         # sql = "SELECT version();"
         sql = """
 select t.*,
-    round(100*cnt2/NULLIF(sum(cnt2) OVER(),0),2) perc2,
-    round(100*cnt3/NULLIF(sum(cnt3) OVER(),0),2) perc3
+    round(100*"catA"/NULLIF(sum("catA") OVER(),0),2) "percA",
+    round(100*"catB"/NULLIF(sum("catB") OVER(),0),2) "percB"
 from
-    (select coalesce(race_new, 'NA') as race_new, sum(case when intervention = 'Yes' then 1 else 0 end) cnt2,
-        sum(case when intervention = 'No' then 1 else 0 end) cnt3
+    (select coalesce(race_new, 'NA') as race_new, sum(case when intervention = 'Yes' then 1 else 0 end) "catA",
+        sum(case when intervention = 'No' then 1 else 0 end) "catB"
     from public.vw_exp2
     group by coalesce(race_new, 'NA')) t
-order by case when race_new = 'Yes' then '1' when race_new = 'No' then '2' when
-	race_new = 'NA' then 'ZZ' when race_new = 'No Complication' THEN 'ZY' else race_new end
+order by case when race_new = 'Yes' then '1' 
+              when race_new = 'No' then '2' 
+              when race_new = 'NA' then 'ZZ' 
+              when race_new = 'No Complication' THEN 'ZY' 
+              when race_new = 'female' then 'Z' || race_new
+              else race_new 
+          end
         """
         sql = sql.replace('race_new', var)
         cr = connection.cursor()
@@ -202,4 +207,20 @@ ORDER BY intervention DESC
         f = open("D:/__DM__/outfile.html", "a")
         f.write(x)
         f.write("\n\n")
-        f.close()              
+        f.close()     
+
+    @staticmethod
+    def fn_var_header(var, i):
+        hd = '<h3 id="my-var-' + str(i) + '">' + str(i) + '. ' + var + '</h3>'
+        nav = """
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a class="btn btn-light" href="#my-var-PREV">&#9665;</a>
+        <a class="btn btn-light" href="#my-var-THIS">&#9673;</a>
+        <a class="btn btn-light" href="#my-var-NEXT">&#9655;</a>
+    </div>  
+    """
+        nav = nav.replace('PREV', str(i - 1))
+        nav = nav.replace('THIS', str(i))
+        nav = nav.replace('NEXT', str(i + 1))
+        hd = hd + nav   
+        return hd              
