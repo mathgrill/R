@@ -94,7 +94,7 @@ var data2 = $('#table1 td:nth-child(4)').map(function(){
 var trace1 = {
   x: x1,
   y: data1,
-  name: 'Int 2',
+  name: 'Exp A',
   type: 'bar',
   text: data1.map(String),
   textposition: 'auto'  
@@ -102,7 +102,7 @@ var trace1 = {
 var trace2 = {
   x: x1,
   y: data2,
-  name: 'Int 3',
+  name: 'Exp B',
   type: 'bar',
   text: data2.map(String),
   textposition: 'auto'  
