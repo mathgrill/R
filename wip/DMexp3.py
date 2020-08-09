@@ -13,7 +13,7 @@ class DM:
         return connection  
 
     @staticmethod
-    def pull_db(var):
+    def pull_db(var, my_data_view):
         connection = DM.get_conn()         
         # cursor = connection.cursor()
         # Print PostgreSQL Connection properties
@@ -27,7 +27,7 @@ select t.*,
 from
     (select coalesce(race_new, 'NA') as race_new, sum(case when intervention = 'Yes' then 1 else 0 end) "catA",
         sum(case when intervention = 'No' then 1 else 0 end) "catB"
-    from public.vw_exp2
+    from my_data_view
     group by coalesce(race_new, 'NA')) t
 order by case when race_new = 'Yes' then '1' 
               when race_new = 'No' then '2' 
@@ -37,7 +37,7 @@ order by case when race_new = 'Yes' then '1'
               else race_new 
           end
         """
-        sql = sql.replace('race_new', var)
+        sql = sql.replace('race_new', var).replace("my_data_view", my_data_view)
         cr = connection.cursor()
         cr.execute(sql)
         tmp = cr.fetchall()
@@ -167,10 +167,10 @@ Plotly.newPlot('chart1', data, layout);
         f.close()                           
 
     @staticmethod
-    def db_num_var(var):
+    def db_num_var(var, my_data_view):
         connection = DM.get_conn() 
-        sql = "select intervention, length_of_stay::numeric as my_var from public.vw_exp2 where nullif(length_of_stay, -99) is not null"
-        sql = sql.replace('length_of_stay', var)
+        sql = "select intervention, length_of_stay::numeric as my_var from my_data_view where nullif(length_of_stay, -99) is not null"
+        sql = sql.replace('length_of_stay', var).replace('my_data_view', my_data_view)
         cr = connection.cursor()
         cr.execute(sql)
         tmp = cr.fetchall()
@@ -187,7 +187,7 @@ Plotly.newPlot('chart1', data, layout);
         return df     
 
     @staticmethod
-    def db_num_var_stdev(var):
+    def db_num_var_stdev(var, my_data_view):
         connection = DM.get_conn() 
         sql = """
   SELECT intervention,
@@ -196,12 +196,12 @@ Plotly.newPlot('chart1', data, layout);
          ROUND (STDDEV_POP (pro_numnodes), 6)                           AS stdev,
          'pro_numnodes'                                                 AS variable,
          SUM (CASE WHEN pro_numnodes IS NOT NULL THEN 0 ELSE 1 END)     AS cnt_na
-    FROM (SELECT intervention, NULLIF (pro_numnodes, -99) AS pro_numnodes FROM public.vw_exp2
+    FROM (SELECT intervention, NULLIF (pro_numnodes, -99) AS pro_numnodes FROM my_data_view
                                                                                              ) t
 GROUP BY intervention 
 ORDER BY intervention DESC
 """
-        sql = sql.replace('pro_numnodes', var)
+        sql = sql.replace('pro_numnodes', var).replace('my_data_view', my_data_view)
         cr = connection.cursor()
         cr.execute(sql)
         tmp = cr.fetchall()
