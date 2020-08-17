@@ -6,6 +6,7 @@ case when CPT in ('44146','44208') then 'Yes'
  when  CPT in ('44140','44145','44204','44207') then 'No' end as intervention,
 case when ORGSPCSSI = 'Organ/Space SSI'  then 'Yes'
  when ORGSPCSSI = 'No Complication' then 'No' end as outcome,
+ caseid,
 703 * NULLIF (weight, -99) / (NULLIF (height, -99) ^ 2) AS bmi,
 CASE WHEN dopertod > 0 THEN 'Yes' ELSE 'No' END AS mortality,
 replace(age,'+','')::numeric as age,
