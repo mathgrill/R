@@ -67,5 +67,5 @@ and COALESCE(CONCPT8, 'x') not in ('44143','44206','44141')
 and COALESCE(CONCPT9, 'x') not in ('44143','44206','44141')
 and COALESCE(CONCPT10, 'x') not in ('44143','44206','44141')
 and COALESCE(OTHSESHOCK, 'x') != 'Septic Shock'
-and	COALESCE(ASACLAS, 'x') != '5-Moribund'
+and COALESCE(ASACLAS, 'x') != '5-Moribund'
 ;
