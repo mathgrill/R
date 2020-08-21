@@ -1,135 +1,123 @@
-/*
-CREATE INDEX idx_acs_cpt
-    ON public.acs (cpt);
+-- View: public.vw_exp1
 
-
-CREATE TABLE public.acs_w
-AS
-    SELECT x.*
-      FROM public.acs x
-     WHERE     pufyear BETWEEN '2012' AND '2018'
-           AND (podiag IN ('153.7', '153.2') OR podiag10 IN ('C18.5', 'C18.6'))
-           AND electsurg = 'Yes'
-           AND cpt IN ('44145',
-                       '44207',
-                       '44140',
-                       '44204')
---limit 50
-;
-*/
-
-DROP VIEW public.vw_exp1;
+-- DROP VIEW public.vw_exp1;
 
 CREATE OR REPLACE VIEW public.vw_exp1
-AS
-      SELECT                                                                                                  --count(*)
-             CASE WHEN cpt IN ('44145', '44207') THEN '2' WHEN cpt IN ('44140', '44204') THEN '3' END
-                 AS intervention,
-             CASE WHEN y.col_nodeseval >= 12 THEN '12 or more' WHEN y.col_nodeseval >= 0 THEN 'Less than 12' END
-                 AS outcome,
-             CASE WHEN y.col_nodeseval >= 12 THEN 'No' WHEN y.col_nodeseval >= 0 THEN 'Yes' ELSE 'NA' END
-                 AS outcome_under12,
-             NULLIF(optime, -99)
-                 AS operative_time,
-             CASE
-                 WHEN col_approach IS NULL
-                 THEN
-                     'NA'
-                 WHEN col_approach IN ('Hybrid w/ unplanned conversion to open',
-                                       'Laparoscopic w/ unplanned conversion to Open',
-                                       'Laparoscopic w/ unplanned conversion to open',
-                                       'NOTES w/ unplanned conversion to open',
-                                       'Other MIS approach w/ unplanned conversion to open',
-                                       'Robotic w/ unplanned conversion to open',
-                                       'SILS w/ unplanned conversion to open')
-                 THEN
-                     'Yes'
-                 ELSE
-                     'No'
-             END
-                 AS lap_converted_to_open,
-			 col_anastomotic,
-             CASE
-			     WHEN col_anastomotic IS NULL THEN 'NA'
-                 WHEN col_anastomotic IN ('No', 'No definitive diagnosis of leak/leak related abscess') THEN 'No'
-                 WHEN col_anastomotic = 'Unknown' THEN 'NA'
-                 ELSE 'Yes'
-             END
-                 AS anastomotic_leak,
-             othbleed
-                 AS bleeding,
-             CASE WHEN othbleed = 'No Complication' THEN 'No' ELSE 'Yes' END
-                 AS bleeding_b,
-             CASE
-                 WHEN supinfec = 'Superficial Incisional SSI' OR wndinfd = 'Deep Incisional SSI' THEN 'Yes'
-                 ELSE 'No'
-             END
-                 AS surgical_site_infection,
-             orgspcssi,
-             CASE WHEN orgspcssi = 'No Complication' THEN 'No' WHEN orgspcssi IS NULL THEN 'NA' ELSE 'Yes' END
-                 AS deep_organ_space_infection,
-             --dopertod,
-             CASE WHEN dopertod = '-99' THEN 'No' WHEN dopertod IS NULL THEN 'NA' ELSE 'Yes' END
-                 AS dopertod, --mortality	 
-             --mortality <- ifelse(!is.na(DOpertoD), ‘Yes’,’No’)
-             NULLIF(tothlos, -99)
-                 AS length_of_stay,
-             reoperation1,
-             readmission1,
-             CASE WHEN othseshock IS NULL THEN 'NA' WHEN othseshock = 'Septic Shock' THEN 'Yes' ELSE 'No' END
-                 AS septic_shock,
-             cdmi
-                 AS myocardial_infarction,
-             oprenafl
-                 AS acute_renal_failure,
-             CASE WHEN oupneumo IS NULL THEN 'NA' WHEN oupneumo = 'Pneumonia' THEN 'Yes' ELSE 'No' END
-                 AS pneumonia, 
-			 CASE WHEN othdvt IS NULL THEN 'NA' WHEN othdvt IN ('DVT Requiring Therap', 'DVT Requiring Therapy') THEN 'Yes'
-			       ELSE 'No' END 
-			     AS deep_vein_thrombosis,
-			 pulembol as pulmonary_embolism,
-             CASE WHEN sex = 'male' THEN 'Yes' WHEN sex IS NULL THEN 'NA' ELSE 'No' END
-                 AS sex_male,
-             race_new,
-             CASE
-                 WHEN race_new = 'White' THEN 'Yes'
-                 WHEN race_new IS NULL THEN 'NA'
-                 WHEN race_new IN ('Unknown/Not Reported', 'Unknown') THEN 'NA'
-                 ELSE 'No'
-             END
-                 AS race_new_white,
-             COALESCE (smoke, 'NA')
-                 AS smoke,
-			 hypermed as hypertension,
-             cnscva,
-             CASE WHEN cnscva IS NULL THEN 'NA' WHEN cnscva = 'No Complication' THEN 'No' ELSE 'Yes' END
-                 AS stroke,
-			 steroid, --steroid use
-			 WTLOSS, -- >10% weight loss 
-			 BLEEDDIS, --bleeding disorder
-			 hxchf, --congestive heart failure 
-			 hxcopd, --COPD
-             age as age_orig,
-			 replace(age,'+','')::numeric as age,
-             diabetes,
-             asaclas,
-             col_malignancyt
-                 AS pathologic_t_stage,
-             col_malignancyn
-                 AS pathologic_n_stage,
-             height,
-             weight,
-             703 * NULLIF (weight, -99) / (NULLIF (height, -99) ^ 2)
-                 AS bmi
-        --x.*, y.*
-        FROM public.colect y, public.acs_w x
-       WHERE     y.caseid = x.caseid
-             AND pufyear BETWEEN '2012' AND '2018'
-             AND (podiag IN ('153.7', '153.2') OR podiag10 IN ('C18.5', 'C18.6'))
-             AND electsurg = 'Yes'
-             AND cpt IN ('44145',
-                         '44207',
-                         '44140',
-                         '44204')
-    ORDER BY dopertod DESC
-;
+ AS
+ SELECT
+        CASE
+            WHEN x.cpt::text = ANY (ARRAY['44145'::character varying, '44207'::character varying]::text[]) THEN 'Yes'::text
+            WHEN x.cpt::text = ANY (ARRAY['44140'::character varying, '44204'::character varying]::text[]) THEN 'No'::text
+            ELSE NULL::text
+        END AS intervention,
+        CASE
+            WHEN x.col_nodeseval >= 12::numeric THEN 'Yes'::text
+            WHEN x.col_nodeseval >= 0::numeric THEN 'No'::text
+            ELSE NULL::text
+        END AS outcome,
+        CASE
+            WHEN x.col_nodeseval >= 12::numeric THEN 'No'::text
+            WHEN x.col_nodeseval >= 0::numeric THEN 'Yes'::text
+            ELSE 'NA'::text
+        END AS outcome_under12,
+    NULLIF(x.optime, '-99'::integer::numeric) AS operative_time,
+        CASE
+            WHEN x.col_approach IS NULL THEN 'NA'::text
+            WHEN x.col_approach::text = ANY (ARRAY['Hybrid w/ unplanned conversion to open'::character varying, 'Laparoscopic w/ unplanned conversion to Open'::character varying, 'Laparoscopic w/ unplanned conversion to open'::character varying, 'NOTES w/ unplanned conversion to open'::character varying, 'Other MIS approach w/ unplanned conversion to open'::character varying, 'Robotic w/ unplanned conversion to open'::character varying, 'SILS w/ unplanned conversion to open'::character varying]::text[]) THEN 'Yes'::text
+            ELSE 'No'::text
+        END AS lap_converted_to_open,
+    x.col_anastomotic,
+        CASE
+            WHEN x.col_anastomotic IS NULL THEN 'NA'::text
+            WHEN x.col_anastomotic::text = ANY (ARRAY['No'::character varying, 'No definitive diagnosis of leak/leak related abscess'::character varying]::text[]) THEN 'No'::text
+            WHEN x.col_anastomotic::text = 'Unknown'::text THEN 'NA'::text
+            ELSE 'Yes'::text
+        END AS anastomotic_leak,
+    x.othbleed AS bleeding,
+        CASE
+            WHEN x.othbleed::text = 'No Complication'::text THEN 'No'::text
+            ELSE 'Yes'::text
+        END AS bleeding_b,
+        CASE
+            WHEN x.supinfec::text = 'Superficial Incisional SSI'::text OR x.wndinfd::text = 'Deep Incisional SSI'::text THEN 'Yes'::text
+            ELSE 'No'::text
+        END AS surgical_site_infection,
+    x.orgspcssi,
+        CASE
+            WHEN x.orgspcssi::text = 'No Complication'::text THEN 'No'::text
+            WHEN x.orgspcssi IS NULL THEN 'NA'::text
+            ELSE 'Yes'::text
+        END AS deep_organ_space_infection,
+        CASE
+            WHEN x.dopertod = '-99'::numeric THEN 'No'::text
+            WHEN x.dopertod IS NULL THEN 'NA'::text
+            ELSE 'Yes'::text
+        END AS dopertod,
+    NULLIF(x.tothlos, '-99'::integer::numeric) AS length_of_stay,
+    x.reoperation1,
+    x.readmission1,
+        CASE
+            WHEN x.othseshock IS NULL THEN 'NA'::text
+            WHEN x.othseshock::text = 'Septic Shock'::text THEN 'Yes'::text
+            ELSE 'No'::text
+        END AS septic_shock,
+    x.cdmi AS myocardial_infarction,
+    x.oprenafl AS acute_renal_failure,
+        CASE
+            WHEN x.oupneumo IS NULL THEN 'NA'::text
+            WHEN x.oupneumo::text = 'Pneumonia'::text THEN 'Yes'::text
+            ELSE 'No'::text
+        END AS pneumonia,
+        CASE
+            WHEN x.othdvt IS NULL THEN 'NA'::text
+            WHEN x.othdvt::text = ANY (ARRAY['DVT Requiring Therap'::character varying, 'DVT Requiring Therapy'::character varying]::text[]) THEN 'Yes'::text
+            ELSE 'No'::text
+        END AS deep_vein_thrombosis,
+    x.pulembol AS pulmonary_embolism,
+        CASE
+            WHEN x.sex::text = 'male'::text THEN 'Yes'::text
+            WHEN x.sex IS NULL THEN 'NA'::text
+            ELSE 'No'::text
+        END AS sex_male,
+    x.race_new,
+        CASE
+            WHEN x.race_new::text = 'White'::text THEN 'Yes'::text
+            WHEN x.race_new IS NULL THEN 'NA'::text
+            WHEN x.race_new::text = ANY (ARRAY['Unknown/Not Reported'::character varying, 'Unknown'::character varying]::text[]) THEN 'NA'::text
+            ELSE 'No'::text
+        END AS race_new_white,
+    COALESCE(x.smoke, 'NA'::character varying) AS smoke,
+    x.hypermed AS hypertension,
+    x.cnscva,
+        CASE
+            WHEN x.cnscva IS NULL THEN 'NA'::text
+            WHEN x.cnscva::text = 'No Complication'::text THEN 'No'::text
+            ELSE 'Yes'::text
+        END AS stroke,
+    x.steroid,
+    x.wtloss,
+    x.bleeddis,
+    x.hxchf,
+    x.hxcopd,
+    x.age AS age_orig,
+    replace(x.age::text, '+'::text, ''::text)::numeric AS age,
+    x.diabetes,
+    x.asaclas,
+    x.col_malignancyt AS pathologic_t_stage,
+    x.col_malignancyn AS pathologic_n_stage,
+    x.height,
+    x.weight,
+    703::numeric * NULLIF(x.weight, '-99'::integer::numeric) / (NULLIF(x.height, '-99'::integer::numeric) ^ 2::numeric) AS bmi
+   FROM 
+    acs_w x
+  WHERE x.pufyear::text >= '2012'::text AND x.pufyear::text <= '2018'::text AND ((x.podiag::text = ANY (ARRAY['153.7'::character varying, '153.2'::character varying]::text[])) OR (x.podiag10::text = ANY (ARRAY['C18.5'::character varying, 'C18.6'::character varying]::text[]))) AND x.electsurg::text = 'Yes'::text AND (x.cpt::text = ANY (ARRAY['44145'::character varying, '44207'::character varying, '44140'::character varying, '44204'::character varying]::text[]))
+  ORDER BY (
+        CASE
+            WHEN x.dopertod = '-99'::numeric THEN 'No'::text
+            WHEN x.dopertod IS NULL THEN 'NA'::text
+            ELSE 'Yes'::text
+        END) DESC;
+
+ALTER TABLE public.vw_exp1
+    OWNER TO postgres;
+

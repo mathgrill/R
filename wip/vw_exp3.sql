@@ -1,3 +1,5 @@
+--drop view public.vw_exp3;
+
 create or replace view public.vw_exp3 as
 select smoke as intervention, 
 HXCOPD as outcome,
@@ -40,11 +42,11 @@ OTHSYSEP,
 OTHSESHOCK,
 WOUND_CLOSURE,
 OTHCDIFF,
-           CASE WHEN dopertod > 0 THEN 'Yes' ELSE 'No' END
+           CASE WHEN dopertod >= 0 THEN 'Yes' ELSE 'No' END
                AS mortality
 from public.acs 
 where pufyear >= '2010' and smoke is not null
---limit 1000
+--limit 10000
 ;
 
 

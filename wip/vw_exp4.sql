@@ -8,7 +8,7 @@ case when ORGSPCSSI = 'Organ/Space SSI'  then 'Yes'
  when ORGSPCSSI = 'No Complication' then 'No' end as outcome,
  caseid,
 703 * NULLIF (weight, -99) / (NULLIF (height, -99) ^ 2) AS bmi,
-CASE WHEN dopertod > 0 THEN 'Yes' ELSE 'No' END AS mortality,
+CASE WHEN dopertod >= 0 THEN 'Yes' ELSE 'No' END AS mortality,
 replace(age,'+','')::numeric as age,
 SEX,
 RACE_NEW,
@@ -29,8 +29,18 @@ ASACLAS,
 DEHIS,
 OUPNEUMO,
 REINTUB,
-OTHBLEED,
-OTHDVT,
+--OTHBLEED,
+case 
+  when OTHBLEED is null then 'NA'
+  when OTHBLEED = 'No Complication' then OTHBLEED 
+  else 'Yes' 
+end as OTHBLEED,
+--OTHDVT,
+case 
+  when OTHDVT is null then 'NA'
+  when OTHDVT = 'No Complication' then OTHDVT 
+  else 'Yes' 
+end as OTHDVT,
 RETURNOR,
 SUPINFEC,
 WNDINFD,
