@@ -14,6 +14,9 @@ SEX,
 RACE_NEW,
 TOTHLOS,
 DIABETES,
+case when DIABETES = 'NO' then 'No' 
+     when DIABETES is null then null 
+	 else 'Yes' end as DIABETES_bin,
 SMOKE,
 CDMI,
 HXCHF,
@@ -49,7 +52,11 @@ REOPERATION1,
 PODIAG10,
 WNDCLAS,
 EMERGNCY,
-CPT
+CPT,
+ventpatos,
+OPTIME,
+case when CPT in ('44204', '44207', '44208') then 'MIS'
+     when CPT in ('44140', '44145', '44146') then 'Open' end as open_or_mis
 from
 public.acs
 where (PODIAG10 = 'K57.20' OR PODIAG = '562.11')
@@ -79,4 +86,5 @@ and COALESCE(CONCPT9, 'x') not in ('44143','44206','44141')
 and COALESCE(CONCPT10, 'x') not in ('44143','44206','44141')
 and COALESCE(OTHSESHOCK, 'x') != 'Septic Shock'
 and COALESCE(ASACLAS, 'x') != '5-Moribund'
+and coalesce(ventpatos, 'x') not in ('Yes')
 ;
